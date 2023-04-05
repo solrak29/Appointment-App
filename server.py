@@ -159,7 +159,7 @@ def appt_book_view(year,month,day,provider_id,timeslot):
 	created_appt= create_new_appt(session['user_id'],1,str(timeslot),provider_id,str(fullDate))
 	db.session.add(created_appt)
 	db.session.commit()
-	print "Appointment saved"
+	print("Appointment saved")
 	return redirect('/confirm_appt')
 
 
@@ -206,7 +206,7 @@ def twilio(user_id):
 	appointment= Appointment.query.get(user_id)
 	patient= Patient.query.get(user_id)
 	cell_phone_number= patient.cell_phone_number
-	print cell_phone_number
+	print(cell_phone_number)
 	body = "Hello "+(patient.first_name)+" We look forward to seeing you on "+(appointment.appt_date)+"at "+(appointment.appt_time)
 
 

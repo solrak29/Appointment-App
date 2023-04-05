@@ -15,7 +15,7 @@ db.create_all()
 
 def load_pts():
 	"""Load patients from patients into database"""
-	print "Patient"
+	print("Patient")
 
 	with open('./seed_data/patients.tsv','r+') as data:
 		for i, row in enumerate(data):
@@ -72,7 +72,7 @@ def create_provider():
 	with open('./seed_data/drs.tsv','r+') as data:
 		for i, row in enumerate(data):
 			row = row.rstrip()
-			print row.split(",")
+			print(row.split(","))
 			last_name, first_name,license_number,office_address,office_phone_number= row.split(",")
 			
 			provider=BusinessOwner(
