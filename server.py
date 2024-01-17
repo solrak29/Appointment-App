@@ -8,6 +8,7 @@ from database_functions import create_new_pt, create_new_appt, create_appt_type,
 from datetime import datetime,timedelta
 import json
 from twilio.rest import TwilioRestClient
+
 app = Flask(__name__)
 
 app.secret_key = "ABC"

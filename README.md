@@ -26,17 +26,17 @@ Schedule view for the doctor:
 ## Installation
 Appointment App requires a requirements.txt file installation. Appointment App runs through the server.py file on http://localhost:5000/
 
-Update 2023/4/4
+## Update 2023/4/4
 
-This applications was built on python 2.7 so you will need to update the source files to python 3 if you are going
-to get this running in modern sence.  You cant use the tool
+This applications was built on python 2.7.  
+I updated the source files to python 3. 
 
 2to3-2.7 -w *.py to get thing udpated.
 
-NOTE:  I ran this on pythong 3.11
+NOTE:  I ran this on python 3.11
 
 the requiresments.txt needs to be updated, and I created a separate one with _ubuntu.txt.  These are installs required to run.
-you will also need basic tools on ubunto if you do not have them setup:
+you will also need basic tools on ubuntu if you do not have them setup:
 
 NOTE the first number there is not typed, it's the order in which I installed.
 
@@ -48,8 +48,6 @@ NOTE the first number there is not typed, it's the order in which I installed.
   165  sudo apt install postgresql
   115  sudo apt update
 
-
-It take s little to get this setup, but maybe this addition in the readme here will help.
 
 ## API Reference
 
