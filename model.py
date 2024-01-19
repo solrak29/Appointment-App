@@ -38,9 +38,10 @@ class BusinessOwner(db.Model):
     provider_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     first_name = db.Column(db.String(64), nullable=False)
     last_name = db.Column(db.String(64), nullable=False)
-    license_number = db.Column(db.String(64), nullable=False)
-    office_address = db.Column(db.String(500), nullable=False)
-    office_phone_number = db.Column(db.String(20), nullable=False)
+    address = db.Column(db.String(500), nullable=False)
+    phone = db.Column(db.String(20), nullable=False)
+    user_name = db.Column(db.String(20), nullable=False)
+    password = db.Column(db.String(20), nullable=False)
 
 def example_business_owner():
     business_owner = BusinessOwner(provider_id = 9191, first_name = "Ron",

@@ -1,5 +1,11 @@
 from model import connect_to_db,db, Patient, BusinessOwner, Appointment, AppointmentType
 from datetime import datetime, timedelta
+from sqlalchemy import select
+
+def verify_user(user_name, password):
+    stmt = select(BusinessOwner).where(BusinessOwner.user_name == user_name)
+    rows = db.session.execute(stmt)
+    print(rows)
 
 def create_new_pt(first_name,
 				  last_name,
@@ -36,13 +42,14 @@ def create_appt_type(appt_type,cost):
 	return appt_type
 
 
-def create_new_owner(first_name,last_name,license_number,office_address,office_phone_number):
+def create_new_owner(first_name,last_name,address,phone_number, user_name, password):
 	"""This is to create a new owner"""
 	new_owner = BusinessOwner(first_name=first_name,
-							last_name=last_name,
-							license_number=license_number,
-							office_address=office_address,
-							office_phone_number=office_phone_number)
+				  last_name=last_name,
+			          address=address,
+				  phone=phone_number,
+                                  user_name=user_name,
+                                  password=password)
 	db.session.add(new_owner)
 	db.session.commit()
 	return new_owner
