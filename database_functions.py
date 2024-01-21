@@ -6,6 +6,10 @@ def verify_user(user_name, password):
     stmt = select(BusinessOwner).where(BusinessOwner.user_name == user_name)
     rows = db.session.execute(stmt)
     print(rows)
+    if rows:
+        return True
+    else:
+        False
 
 def create_new_pt(first_name,
 				  last_name,

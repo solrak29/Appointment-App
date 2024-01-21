@@ -4,7 +4,7 @@ from jinja2 import StrictUndefined
 from flask import Flask, render_template, request, session, flash, redirect
 from flask_debugtoolbar import DebugToolbarExtension
 from model import connect_to_db, db, Patient,Appointment, AppointmentType, BusinessOwner
-from database_functions import create_new_pt, create_new_appt, create_appt_type, create_new_owner, next_aval_date
+from database_functions import create_new_pt, create_new_appt, create_appt_type, create_new_owner, next_aval_date, verify_user
 from datetime import datetime,timedelta
 import json
 from twilio.rest import TwilioRestClient
@@ -60,17 +60,17 @@ def show_options_for_user():
 
     return redirect('existing_user_page.html')
 
-@app.route('/owner_login', methods=['POST'])
-def show_appt_book_to_owner():
-    """Display the appointments scheduled for the owner to see"""
-    time_now= datetime.now()
-    day= time_now.day
-    month= time_now.month
-    year= time_now.year
-
-    session['isDoctor'] = True
-
-    return redirect("/appt_book?appt_day=%s&appt_month=%s&appt_year=%s"%(day,month,year))
+#@app.route('/owner_login', methods=['POST'])
+#def show_appt_book_to_owner():
+#    """Display the appointments scheduled for the owner to see"""
+#    time_now= datetime.now()
+#    day= time_now.day
+#    month= time_now.month
+#    year= time_now.year
+#
+#    session['isDoctor'] = True
+#
+#    return redirect("/appt_book?appt_day=%s&appt_month=%s&appt_year=%s"%(day,month,year))
 
 @app.route('/login', methods=['POST'])
 def show_appts_scheduled_for_this_pt():
@@ -120,8 +120,8 @@ def new_owner_login():
     print(request.form)
     first_name=request.form["first_name"]
     last_name=request.form["last_name"]
-    address=request.form["office_address"]
-    phone_number=request.form["office_phone_number"]
+    address=request.form["address"]
+    phone_number=request.form["phone_number"]
     user_name=request.form["user_name"]
     password=request.form["password"]
     new_owner= create_new_owner(first_name=first_name,
