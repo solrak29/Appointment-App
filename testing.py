@@ -1,10 +1,10 @@
 
 import unittest
 from server import app
-from model import db, example_patient, example_business_owner, connect_to_db, example_patient
+from model import db, example_Client, example_business_owner, connect_to_db, example_Client
 
-class PatientTest(unittest.TestCase):
-	"""Test for patient"""
+class ClientTest(unittest.TestCase):
+	"""Test for Client"""
 
 	def setUp(self):
 		self.client = app.test_client()
@@ -16,7 +16,7 @@ class PatientTest(unittest.TestCase):
 
 	def test_plogin_page(self):
 		result = self.client.get("/plogin")
-		self.assertIn("New Patient Registration Form", result.data)
+		self.assertIn("New Client Registration Form", result.data)
 
 	def test_owner_login_page(self):
 		result = self.client.get("/owner_login")
@@ -28,7 +28,7 @@ class PatientTest(unittest.TestCase):
 
 
 
-class PatientTestDatabase(unittest.TestCase):
+class ClientTestDatabase(unittest.TestCase):
     """Flask tests that use the database."""
 
     def setUp(self):

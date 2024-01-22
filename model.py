@@ -5,10 +5,10 @@ from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 
-class Patient(db.Model):
-    """Patient registration info"""
+class Client(db.Model):
+    """Client registration info"""
 
-    __tablename__ = "patient"
+    __tablename__ = "Client"
 
     user_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     first_name = db.Column(db.String(64), nullable=False)
@@ -17,16 +17,15 @@ class Patient(db.Model):
     cell_phone_number = db.Column(db.String(64), nullable=False)
     user_name = db.Column(db.String(64), nullable=False)
     password = db.Column(db.String(64), nullable=False)
-
     appointments = db.relationship("Appointment")
 
-def example_patient():
-    patient = Patient(user_id=9999, first_name="Mickey",
+def example_Client():
+    Client = Client(user_id=9999, first_name="Mickey",
     				last_name="Mouse", date_of_birth="01/05/2012",
     				cell_phone_number="4152157711", user_name="MickeyMouse",
      				password="123456") 
 
-    db.session.add(example_patient)
+    db.session.add(example_Client)
     db.session.commit()
 
 
@@ -55,7 +54,7 @@ class Appointment(db.Model):
     __tablename__ = "appointment"
 
     appt_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('patient.user_id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('Client.user_id'), nullable=False)
     appt_time = db.Column(db.String, nullable=False)
     appt_date = db.Column(db.String, nullable=False)
     appt_type_id = db.Column(db.Integer, db.ForeignKey('appointment_type.appt_type_id'), nullable=False)

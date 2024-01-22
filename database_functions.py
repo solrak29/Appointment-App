@@ -1,4 +1,4 @@
-from model import connect_to_db,db, Patient, BusinessOwner, Appointment, AppointmentType
+from model import connect_to_db,db, Client, BusinessOwner, Appointment, AppointmentType
 from datetime import datetime, timedelta
 from sqlalchemy import select
 
@@ -19,17 +19,17 @@ def create_new_pt(first_name,
 				  password):
 
 
-	"""This function is to create a new patient"""
-	patient = Patient(first_name=first_name, 
+	"""This function is to create a new Client"""
+	Client = Client(first_name=first_name, 
 					  last_name=last_name, 
 					  date_of_birth=date_of_birth, 
 					  cell_phone_number=cell_phone_number, 
 					  user_name=user_name,
 					  password=password)
-	db.session.add(patient)
+	db.session.add(Client)
 	db.session.commit()
 
-	return patient
+	return Client
 
 def create_new_appt(user_id,appt_type_id,appt_time,provider_id,appt_date):
 	"""This function is to create a new appointment"""

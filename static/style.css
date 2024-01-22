@@ -1,3 +1,28 @@
+.header-container {
+	position: relative;
+	display: inline-block;
+}
+
+.header-container img {
+	display: block;
+	width: 100%;
+	height: auto;
+}
+
+.overlay-text {
+	position: absolute;
+    top: 12%; 
+    left: 44%; 
+    transform: translate(-50%, -50%); 
+    color: #fff; 
+    font-size: 9px; 
+    text-align: center
+}
+
+.overlay-text h2 {
+    font-size: 21px; 
+}
+
 button {
 		background-color: Transparent;
 		background-repeat:no-repeat;

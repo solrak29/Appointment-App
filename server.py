@@ -3,7 +3,7 @@
 from jinja2 import StrictUndefined
 from flask import Flask, render_template, request, session, flash, redirect
 from flask_debugtoolbar import DebugToolbarExtension
-from model import connect_to_db, db, Patient,Appointment, AppointmentType, BusinessOwner
+from model import connect_to_db, db, Client,Appointment, AppointmentType, BusinessOwner
 from database_functions import create_new_pt, create_new_appt, create_appt_type, create_new_owner, next_aval_date, verify_user
 from datetime import datetime,timedelta
 import json
@@ -17,12 +17,15 @@ app.jinja_env.undefined = StrictUndefined
 @app.route('/')
 def index():
     """ This is the homepage"""
-
     return render_template("homepage.html")
+
+@app.route('/registration', methods=['GET'])
+def registration():
+    return render_template('registration.html')
 
 @app.route('/plogin', methods=['GET'])
 def login():
-    """This will allow the business owner and patient to log in. Show the forms"""
+    """This will allow the business owner and Client to log in. Show the forms"""
 
     return render_template("pt_login_form.html")
 
@@ -38,7 +41,7 @@ def login_process():
     password = request.form.get("password")
 
 
-    patient = create_new_pt(first_name=first_name, 
+    Client = create_new_pt(first_name=first_name, 
                             last_name=last_name, 
                             date_of_birth=date_of_birth, 
                             cell_phone_number=cell_phone_number, 
@@ -56,7 +59,7 @@ def show_options_for_user():
     
     user_name=request.args.get('user_name')
     password= request.args.get('password')
-    patient= Patient.query.filter_by(user_name=user_name).first
+    Client= Client.query.filter_by(user_name=user_name).first
 
     return redirect('existing_user_page.html')
 
@@ -78,11 +81,11 @@ def show_appts_scheduled_for_this_pt():
     
     user_name= request.form.get('user_name')
     password=request.form.get('password')
-    patient = Patient.query.filter_by(user_name=user_name).first()
-    first_name = patient.first_name
+    Client = Client.query.filter_by(user_name=user_name).first()
+    first_name = Client.first_name
 
-    if patient.password == password:
-        user_id= patient.user_id
+    if Client.password == password:
+        user_id= Client.user_id
         session['user_id']= user_id
         session['isDoctor'] = False
 
@@ -100,12 +103,19 @@ def show_review_page():
 
 @app.route('/owner_login', methods=['GET'])
 def owner_page():
-    """Display form for owner"""
+    """Display form for owner
+    This will display the page to allow the owner of the appointment setup
+    to login or provide a new owner to create their profile and generate their
+    own system.
+    """
     return render_template("owner_login.html", status='ok')
 
 
 @app.route('/owner_login', methods=['POST'])
 def owner_login():
+    """Login for Admin role
+    This allows an owner to login and see thier appiontments.
+    """
     user_name=request.form["user_name"]
     password=request.form["password"]
     if verify_user(user_name, password):
@@ -116,7 +126,12 @@ def owner_login():
 
 @app.route('/new_owner_login', methods=['POST'])
 def new_owner_login():
-    """Process owner login"""
+    """Process owner login
+    This page will allow someone to sign up for the produce.  Upon
+    any entry for someone to create the produce, the idea here is walk
+    through "wizards" or automate copying template files to generate
+    the web site the user will need to handle appointments.
+    """
     print(request.form)
     first_name=request.form["first_name"]
     last_name=request.form["last_name"]
@@ -149,7 +164,7 @@ def show_appt_book():
 
     search_date = "%s/%s/%s"%(appt_month,appt_day,appt_year)
 
-    taken_appts=Appointment.query.filter_by(appt_date=search_date).join(Patient,Appointment.user_id==Patient.user_id).add_columns(Appointment.appt_id, Appointment.provider_id, Appointment.user_id, Appointment.appt_time, Appointment.appt_type_id, Appointment.appt_date, Patient.first_name, Patient.last_name).all()    
+    taken_appts=Appointment.query.filter_by(appt_date=search_date).join(Client,Appointment.user_id==Client.user_id).add_columns(Appointment.appt_id, Appointment.provider_id, Appointment.user_id, Appointment.appt_time, Appointment.appt_type_id, Appointment.appt_date, Client.first_name, Client.last_name).all()    
     return render_template ("appt_book.html", taken_appts=taken_appts, day=appt_day,
         year=appt_year, month=appt_month, isDoctor=isDoctor)
 
@@ -174,8 +189,8 @@ def appt_book_view(year,month,day,provider_id,timeslot):
 def show_scheduled_appts():
     """ Display page to show what is scheduled for this user"""
     user_id= session['user_id']
-    patient = Patient.query.filter_by(user_id=user_id).first()
-    first_name = patient.first_name
+    Client = Client.query.filter_by(user_id=user_id).first()
+    first_name = Client.first_name
 
     appointments= Appointment.query.filter_by(user_id=user_id).all()
     twilio(user_id)
@@ -193,9 +208,9 @@ def conf_appt():
     appt_date="%s/%s/%s"%(month,day,year)
     user=session['user_id']
 
-    patient = Patient.query.filter_by(user_id=user).first()
-    user_id =patient.user_id 
-    first_name=patient.first_name
+    Client = Client.query.filter_by(user_id=user).first()
+    user_id =Client.user_id 
+    first_name=Client.first_name
     created_appt= create_new_appt(user_id=user_id,
                             appt_type_id=1,
                             appt_time=appt_time,
@@ -211,10 +226,10 @@ def twilio(user_id):
 
 
     appointment= Appointment.query.get(user_id)
-    patient= Patient.query.get(user_id)
-    cell_phone_number= patient.cell_phone_number
+    Client= Client.query.get(user_id)
+    cell_phone_number= Client.cell_phone_number
     print(cell_phone_number)
-    body = "Hello "+(patient.first_name)+" We look forward to seeing you on "+(appointment.appt_date)+"at "+(appointment.appt_time)
+    body = "Hello "+(Client.first_name)+" We look forward to seeing you on "+(appointment.appt_date)+"at "+(appointment.appt_time)
 
 
     account_sid = "AC38e1b6d5cc02a5b6eb36e4c446693f57"

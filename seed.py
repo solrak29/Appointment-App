@@ -1,6 +1,6 @@
 from database_functions import create_new_pt, create_new_appt, create_appt_type, create_new_owner
 
-from model import connect_to_db, db,Appointment, Patient, AppointmentType, BusinessOwner
+from model import connect_to_db, db,Appointment, Client, AppointmentType, BusinessOwner
 
 from server import app
 
@@ -14,15 +14,15 @@ db.create_all()
 
 
 def load_pts():
-	"""Load patients from patients into database"""
-	print("Patient")
+	"""Load Clients from Clients into database"""
+	print("Client")
 
-	with open('./seed_data/patients.tsv','r+') as data:
+	with open('./seed_data/Clients.tsv','r+') as data:
 		for i, row in enumerate(data):
 			row = row.rstrip()
 			first_name, last_name,date_of_birth, cell_phone_number, user_name, password = row.split ("\t")
 
-			patient = Patient(
+			Client = Client(
 				first_name=first_name,
 				last_name=last_name,
 				date_of_birth=date_of_birth,
@@ -30,7 +30,7 @@ def load_pts():
 				user_name=user_name,
 				password=password)
 
-			db.session.add(patient)
+			db.session.add(Client)
 			db.session.commit()
 
 def load_appts_for_schedule():
@@ -96,7 +96,7 @@ if __name__ == '__main__':
 	load_appts_for_schedule()
 
 # create_new_pt('ruba', 'hansan', '10101977', 6503012211, 'rubmnbhassan', '123456')
-# ruba = Patient.query.filter_by(first_name='ruba').first()
+# ruba = Client.query.filter_by(first_name='ruba').first()
 
 # create_appt_type('Surgery', 1000)
 # surgery = AppointmentType.query.filter_by(appt_type='Surgery').first()

@@ -1,17 +1,17 @@
 ## Synopsis
   
-Appointment Scheduler is an app that allows new and existing patients to log in and schedule an appointment based on available times and dates. This can maximize the office production as it gives the patients the (freedom) opportunity to schedule their appointments when they are able to and at the time that is convenient for them. The calendar set-up with datetime shows real time dates and only allows the user to schedule two business days in advance. My calendar has the benefit of having two views: one for the patient and one for the doctor. The doctor has the added benefit of seeing who has scheduled an appointment at any time, both in the office and remotely.
+Appointment Scheduler is an app that allows new and existing Clients to log in and schedule an appointment based on available times and dates. This can maximize the office production as it gives the Clients the (freedom) opportunity to schedule their appointments when they are able to and at the time that is convenient for them. The calendar set-up with datetime shows real time dates and only allows the user to schedule two business days in advance. My calendar has the benefit of having two views: one for the Client and one for the doctor. The doctor has the added benefit of seeing who has scheduled an appointment at any time, both in the office and remotely.
 
 ![homepage](/static/homepage.jpeg?raw=true "Homepage")
 
-Patient Log in:
-![Patient login](/static/patientlogin.jpeg?raw=true "Patient Log in page")
+Client Log in:
+![Client login](/static/Clientlogin.jpeg?raw=true "Client Log in page")
 
 Once user is logged in:
 ![User page](/static/onceuserloggedin.jpeg?raw=true "Once user is logged in")
 
-Schedule view for patient: 
-![Schedule view for patient](/static/patientscheduleview.jpeg?raw=true"Schedule view for patient")
+Schedule view for Client: 
+![Schedule view for Client](/static/Clientscheduleview.jpeg?raw=true"Schedule view for Client")
 
 Confirmed page:
 ![Confirmed page](/static/confirmedpage.jpeg?raw=true "Confirmed page")
