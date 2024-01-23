@@ -24,9 +24,10 @@
 }
 
 button {
+	    margin-top: 5px;
 		background-color: Transparent;
 		background-repeat:no-repeat;
-		border: none;
+		/*border: none;*/
 		cursor:pointer;
 		overflow: hidden;
 		outline:none;
@@ -35,3 +36,71 @@ button {
 .th {
 	border: red solid 1px;
 }
+
+
+body {
+  font-family: "Montserrat";  /* just a cutsom font */
+}
+ 
+a:-webkit-any-link{       
+  text-decoration:none !important;    /* do not underline links */
+  color: black; !important;           /* give links a default color */
+}
+
+.wrapper {
+    margin: 10em;                   /* just a temp margin */
+    border: 0.1em solid #ccc;   /* wrap the calendar inside a box */
+    width: 75em;                /* define a width for the box */
+    height: 24em;               /* define a height for the box */
+    box-shadow: 0.1em 0.2em 0.8em #ccc; /* box shadow for better view */
+ 
+  }
+ 
+  .header {
+    height: 4em;                    /* define a height for the header */
+    background-color: #3f51b5;      /* give the header a background color */
+    color: white;                   /* give the header a text color */
+    text-align: center;             /* center the text inside the header */
+  }
+ 
+.calendar-body .col-xs-1 {
+    width: 10em;                   /* give each column a fixed width */
+    margin-left: 0.2em;             /* have some space between columnd */
+    text-align: center;             /* align text in the center */
+  }
+
+  .header p {
+    padding-top: 1.2em;             /* vertical centering */
+    text-transform: uppercase;      /* all caps text  */
+  }
+ 
+.header span {
+    padding: 1.3em;         /* vertical and horizontal centering icons */
+}
+ 
+.inactive {                 /* inactive dates get a light gray text color */
+    color: #ccc;
+}
+ 
+.weekdays { 
+    padding: 1em;           /* giving weekdays some space around */
+}
+ 
+.dates {
+    padding: 0.2em 1em 0.2em 1em;   /* giving dates some space  */
+}
+ 
+.line {                             /* a gray line separator  */
+    height: 0.1em;
+    border: 0.1em solid #EEEEEE;
+}
+ 
+.current-date {                 /* styling the current date section  */
+    text-transform: uppercase;
+    text-align: center;
+    padding: 0.7em;
+}
+ 
+.calendar-body .row .col-xs-1 p:hover {
+    color: #4778a6;         /* hover state on all dates  */
+} 

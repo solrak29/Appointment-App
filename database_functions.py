@@ -20,16 +20,16 @@ def create_new_pt(first_name,
 
 
 	"""This function is to create a new Client"""
-	Client = Client(first_name=first_name, 
-					  last_name=last_name, 
-					  date_of_birth=date_of_birth, 
-					  cell_phone_number=cell_phone_number, 
-					  user_name=user_name,
-					  password=password)
-	db.session.add(Client)
+	the_client = Client(first_name=first_name, 
+					last_name=last_name, 
+					date_of_birth=date_of_birth, 
+					cell_phone_number=cell_phone_number, 
+					user_name=user_name,
+					password=password)
+	db.session.add(the_client)
 	db.session.commit()
 
-	return Client
+	return the_client
 
 def create_new_appt(user_id,appt_type_id,appt_time,provider_id,appt_date):
 	"""This function is to create a new appointment"""
