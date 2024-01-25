@@ -3,6 +3,7 @@
 from jinja2 import StrictUndefined
 from flask import Flask, render_template, request, session, flash, redirect
 from flask_debugtoolbar import DebugToolbarExtension
+from helper.calander_helper import generate_calander
 from model import connect_to_db, db, Client,Appointment, AppointmentType, BusinessOwner
 from database_functions import create_new_pt, create_new_appt, create_appt_type, create_new_owner, next_aval_date, verify_user
 from datetime import datetime,timedelta
@@ -81,11 +82,15 @@ def show_appts_scheduled_for_this_pt():
     
     user_name= request.form.get('user_name')
     password=request.form.get('password')
-    Client = Client.query.filter_by(user_name=user_name).first()
-    first_name = Client.first_name
+    client = Client.query.filter_by(user_name=user_name).first()
+    if not client:
+        flash("Please enter the correct password!")
+        return redirect ('plogin')
 
-    if Client.password == password:
-        user_id= Client.user_id
+    first_name = client.first_name
+
+    if client.password == password:
+        user_id= client.user_id
         session['user_id']= user_id
         session['isDoctor'] = False
 
@@ -154,9 +159,9 @@ def new_owner_login():
 def show_appt_book():
     """This will take the pts name and show the appt book"""
 
-    appt_day = request.args.get('appt_day')
-    appt_month = request.args.get('appt_month')
-    appt_year = request.args.get('appt_year')
+    appt_day = int(request.args.get('appt_day'))
+    appt_month = int(request.args.get('appt_month'))
+    appt_year = int(request.args.get('appt_year'))
     
     isDoctor = False
     if 'isDoctor' in session:
@@ -165,7 +170,8 @@ def show_appt_book():
     search_date = "%s/%s/%s"%(appt_month,appt_day,appt_year)
 
     taken_appts=Appointment.query.filter_by(appt_date=search_date).join(Client,Appointment.user_id==Client.user_id).add_columns(Appointment.appt_id, Appointment.provider_id, Appointment.user_id, Appointment.appt_time, Appointment.appt_type_id, Appointment.appt_date, Client.first_name, Client.last_name).all()    
-    return render_template ("appt_book.html", taken_appts=taken_appts, day=appt_day,
+    cal_data = generate_calander(appt_year, appt_month, taken_appts)
+    return render_template ("appt_book.html", cal_data=cal_data, taken_appts=taken_appts, day=appt_day,
         year=appt_year, month=appt_month, isDoctor=isDoctor)
 
 @app.route ('/appt_book/<year>/<month>/<day>/<provider_id>/<timeslot>', methods=['POST'])
