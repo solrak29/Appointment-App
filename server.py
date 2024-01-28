@@ -5,7 +5,7 @@ from flask import Flask, render_template, request, session, flash, redirect
 from flask_debugtoolbar import DebugToolbarExtension
 from helper.calander_helper import generate_calander
 from model import connect_to_db, db, Client,Appointment, AppointmentType, BusinessOwner
-from database_functions import create_new_pt, create_new_appt, create_appt_type, create_new_owner, next_aval_date, verify_user
+from database_functions import create_new_entry, create_new_appt, create_appt_type, create_new_owner, verify_user
 from datetime import datetime,timedelta
 import json
 from twilio.rest import TwilioRestClient
@@ -24,35 +24,38 @@ def index():
 def registration():
     return render_template('registration.html')
 
-@app.route('/plogin', methods=['GET'])
+@app.route('/login', methods=['GET'])
 def login():
     """This will allow the business owner and Client to log in. Show the forms"""
+    return render_template("login.html")
 
-    return render_template("pt_login_form.html")
-
-@app.route('/pregister', methods=['POST'])
+@app.route('/register', methods=['POST'])
 def login_process():
-    """Process login"""
+    """
+    Creates a new user:
+    The user can be an admin (the business owner) or a client ofthe business.
+    TODO:  Have a verification check for when is_admin is set and the account has to be verfied first.
+    TODO:  Email verification where the client can authenticate themselves.
+    TODO:  2-factor authentication will be needed.
+    """
     #Getting the variables
     first_name = request.form.get("first_name")
     last_name = request.form.get("last_name")
-    date_of_birth = request.form.get("date_of_birth")
+    email= request.form.get("email")
     cell_phone_number = request.form.get("cell_phone_number")
     user_name = request.form.get("user_name")
     password = request.form.get("password")
+    is_admin = request.form.get("is_admin")
 
+    _ = create_new_entry(first_name=first_name, 
+                         last_name=last_name, 
+                         email=email, 
+                         cell_phone_number=cell_phone_number, 
+                         user_name=user_name,
+                         password=password,
+                         is_admin=is_admin)
 
-    Client = create_new_pt(first_name=first_name, 
-                            last_name=last_name, 
-                            date_of_birth=date_of_birth, 
-                            cell_phone_number=cell_phone_number, 
-                            user_name=user_name,
-                            password=password)
-
-    day, month, year = next_aval_date()
-
-    
-    return redirect("/appt_book?appt_day=%s&appt_month=%s&appt_year=%s"%(day,month,year))
+    return render_template("existing_user_page.html", first_name=first_name)
 
 @app.route('/existing_user_login', methods=['GET'])
 def show_options_for_user():
@@ -171,8 +174,7 @@ def show_appt_book():
 
     taken_appts=Appointment.query.filter_by(appt_date=search_date).join(Client,Appointment.user_id==Client.user_id).add_columns(Appointment.appt_id, Appointment.provider_id, Appointment.user_id, Appointment.appt_time, Appointment.appt_type_id, Appointment.appt_date, Client.first_name, Client.last_name).all()    
     cal_data = generate_calander(appt_year, appt_month, taken_appts)
-    return render_template ("appt_book.html", cal_data=cal_data, taken_appts=taken_appts, day=appt_day,
-        year=appt_year, month=appt_month, isDoctor=isDoctor)
+    return render_template ("appt_book.html", cal_data=cal_data, taken_appts=taken_appts, day=appt_day, year=appt_year, month=appt_month, isDoctor=isDoctor)
 
 @app.route ('/appt_book/<year>/<month>/<day>/<provider_id>/<timeslot>', methods=['POST'])
 def appt_book_view(year,month,day,provider_id,timeslot):

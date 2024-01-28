@@ -13,10 +13,11 @@ class Client(db.Model):
     user_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     first_name = db.Column(db.String(64), nullable=False)
     last_name = db.Column(db.String(64), nullable=False)
-    date_of_birth = db.Column(db.String, nullable=False) 
+    email = db.Column(db.String, nullable=False) 
     cell_phone_number = db.Column(db.String(64), nullable=False)
     user_name = db.Column(db.String(64), nullable=False)
     password = db.Column(db.String(64), nullable=False)
+    is_admin = db.Column(db.Integer, nullable=False)
     appointments = db.relationship("Appointment")
 
 def example_Client():

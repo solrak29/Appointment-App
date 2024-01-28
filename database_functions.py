@@ -11,25 +11,31 @@ def verify_user(user_name, password):
     else:
         False
 
-def create_new_pt(first_name,
-				  last_name,
-				  date_of_birth,
-				  cell_phone_number,
-				  user_name,
-				  password):
+def create_new_entry(first_name,
+				     last_name,
+				     email,
+				     cell_phone_number,
+				     user_name,
+				     password,
+				     is_admin):
 
 
 	"""This function is to create a new Client"""
-	the_client = Client(first_name=first_name, 
-					last_name=last_name, 
-					date_of_birth=date_of_birth, 
-					cell_phone_number=cell_phone_number, 
-					user_name=user_name,
-					password=password)
-	db.session.add(the_client)
-	db.session.commit()
+	new_entry = Client(first_name=first_name, 
+					   last_name=last_name, 
+					   email=email, 
+					   cell_phone_number=cell_phone_number, 
+					   user_name=user_name,
+					   password=password,
+					   is_admin=1 if is_admin == "on" else 0)
+	#  The idea here is that we can several business owners using this tool
+    #  So we have this boject to where they can see other options and manage some busines owner options.
+    #  One other user will be the super user which will be the person managins all business
+    
 
-	return the_client
+	db.session.add(new_entry)
+	db.session.commit()
+	return new_entry 
 
 def create_new_appt(user_id,appt_type_id,appt_time,provider_id,appt_date):
 	"""This function is to create a new appointment"""
@@ -57,28 +63,3 @@ def create_new_owner(first_name,last_name,address,phone_number, user_name, passw
 	db.session.add(new_owner)
 	db.session.commit()
 	return new_owner
-
-def next_aval_date():
-	"""returns the first available date for user
-
-		>>> type(next_aval_date())
-		<type 'tuple'>
-
-	"""
-	time_now= datetime.now()
-	td= timedelta(1)
-
-	first_available_day = time_now + td 
-	weekdays= ['Monday', 'Tuesday', 'Wednesday', 'Thursday']
-	for day in weekdays:
-		if day in weekdays:
-			first_available_day= time_now +td
-		else: 
-			first_available_day= time_now +timedelta(3)
-	return (first_available_day.day, first_available_day.month, first_available_day.year)
-
-
-
-
-
-
