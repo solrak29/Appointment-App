@@ -9,6 +9,7 @@ from database_functions import create_new_entry, create_new_appt, create_appt_ty
 from datetime import datetime,timedelta
 import json
 from twilio.rest import TwilioRestClient
+from datetime import date
 
 app = Flask(__name__)
 
@@ -54,8 +55,18 @@ def login_process():
                          user_name=user_name,
                          password=password,
                          is_admin=is_admin)
+    # The idea here is that create_new_entry will not be 100% complete if admin is selected.
+    # TODO: When admin is selected we should have the account verified.  If the account is not verified
+    #       Then we should provide the appropiate message.
+    #       Once verifed we provide the admin page that will show the schedule for the business.
 
-    return render_template("existing_user_page.html", first_name=first_name)
+    if is_admin:
+        today = date.today()
+        #taken_appts=Appointment.query.filter_by(appt_date=today).join(Client,Appointment.user_id==Client.user_id).add_columns(Appointment.appt_id, Appointment.provider_id, Appointment.user_id, Appointment.appt_time, Appointment.appt_type_id, Appointment.appt_date, Client.first_name, Client.last_name).all()    
+        cal_data = generate_calander(today.year, today.month, None)
+        return render_template ("appt_book.html", cal_data=cal_data, taken_appts=None, day=today.day, year=today.year, month=today.month, isDoctor=is_admin)
+    else:
+        return render_template("existing_user_page.html", first_name=first_name)
 
 @app.route('/existing_user_login', methods=['GET'])
 def show_options_for_user():
