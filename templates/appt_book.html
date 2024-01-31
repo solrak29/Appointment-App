@@ -64,7 +64,9 @@
                     {% if day.day > 0 %}
                         <strong>{{ day.day }}</strong><br>
                         {% for appointment in day.appt %}
-                            {{ appointment.title }}<br>
+                            {% if appointment.title == "Open" %}
+                             href    {{ appointment.title }}<br>
+                            {% endif %}
                         {% endfor %}
                     {% endif %}
                 </td>

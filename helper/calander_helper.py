@@ -13,6 +13,8 @@ def generate_calander(year, month, appts):
                     appt_date = appt["date"]
                     if appt_date.year == year and appt_date.month == month:
                         day_data["appt"].append(appt)
+            else:
+                day_data["appt"].append({"title": "Open"})
             week_data.append(day_data) 
         calendar_data.append(week_data)
 

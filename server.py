@@ -98,8 +98,8 @@ def show_appts_scheduled_for_this_pt():
     password=request.form.get('password')
     client = Client.query.filter_by(user_name=user_name).first()
     if not client:
-        flash("Please enter the correct password!")
-        return redirect ('plogin')
+        flash("Credentials are not correct or not found!")
+        return redirect ('login')
 
     first_name = client.first_name
 
@@ -107,11 +107,10 @@ def show_appts_scheduled_for_this_pt():
         user_id= client.user_id
         session['user_id']= user_id
         session['isDoctor'] = False
-
-        return render_template("existing_user_page.html", first_name=first_name)
+        return render_template("existing_user_page.html", first_name=type(client))
     else:
-        flash("Please enter the correct password!")
-        return redirect ('plogin')
+        flash("Credentials are not correct or not found!")
+        return redirect ('login')
 
 
 @app.route('/reviews/', methods=['GET'])

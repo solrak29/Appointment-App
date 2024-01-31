@@ -1,5 +1,16 @@
 {% extends 'base.html'%}
 {% block content %}
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul class=flashes>
+    {% for message in messages %}
+	  <script >
+		alert("{{message}}");
+	  </script>
+    {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
 <div style="margin-top:40px;width:100%">
 	<div class="col-sm-6">
 		<div class="well spaced" style="width:100%">
