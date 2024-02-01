@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
 	<div align="center">
-	<h1>Welcome {{ first_name }}!</h1> 
+	<h1>Welcome {{ user_name }}!</h1> 
 	<h2>Please choose one of the following options:</h2>
 	
 	<div>
@@ -25,7 +25,7 @@
 	<br>	
 	<br>
 <div style="margin-top:30px" align="right"> 
-	  <img style="border-radius:50px"src="/static/FD.jpg" height="500" width="100%"></img>
+	  <img style="border-radius:50px"src="/static/doggies.jpg" height="500" width="100%"></img>
 </div>
 	<script>
 		var date = new Date();
@@ -41,7 +41,7 @@
 		var link = 'appt_book?appt_year='
 			+date.getFullYear()+'&appt_month='
 			+(date.getMonth()+1)+'&appt_day='
-			+date.getDate();
+			+date.getDate()+'&user={{user_name}}';
 		document.getElementById('apt_book').setAttribute("href", link);
 	</script>
 	</div>

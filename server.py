@@ -64,9 +64,9 @@ def login_process():
         today = date.today()
         #taken_appts=Appointment.query.filter_by(appt_date=today).join(Client,Appointment.user_id==Client.user_id).add_columns(Appointment.appt_id, Appointment.provider_id, Appointment.user_id, Appointment.appt_time, Appointment.appt_type_id, Appointment.appt_date, Client.first_name, Client.last_name).all()    
         cal_data = generate_calander(today.year, today.month, None)
-        return render_template ("appt_book.html", cal_data=cal_data, taken_appts=None, day=today.day, year=today.year, month=today.month, isDoctor=is_admin)
+        return render_template ("appt_book.html", user=user_name, cal_data=cal_data, taken_appts=None, day=today.day, year=today.year, month=today.month, isDoctor=is_admin)
     else:
-        return render_template("existing_user_page.html", first_name=first_name)
+        return render_template("existing_user_page.html", user_name=user_name)
 
 @app.route('/existing_user_login', methods=['GET'])
 def show_options_for_user():
@@ -76,7 +76,7 @@ def show_options_for_user():
     password= request.args.get('password')
     Client= Client.query.filter_by(user_name=user_name).first
 
-    return redirect('existing_user_page.html')
+    return redirect('existing_user_page.html', user_name=user_name)
 
 #@app.route('/owner_login', methods=['POST'])
 #def show_appt_book_to_owner():
@@ -107,7 +107,7 @@ def show_appts_scheduled_for_this_pt():
         user_id= client.user_id
         session['user_id']= user_id
         session['isDoctor'] = False
-        return render_template("existing_user_page.html", first_name=type(client))
+        return render_template("existing_user_page.html", user_name=client.user_name)
     else:
         flash("Credentials are not correct or not found!")
         return redirect ('login')
@@ -175,16 +175,23 @@ def show_appt_book():
     appt_day = int(request.args.get('appt_day'))
     appt_month = int(request.args.get('appt_month'))
     appt_year = int(request.args.get('appt_year'))
+    user = request.args.get('user')
+    client = Client.query.filter_by(user_name=user).first()
+    print(client)
+    print(client.user_name)
     
     isDoctor = False
     if 'isDoctor' in session:
         isDoctor = session['isDoctor']
 
     search_date = "%s/%s/%s"%(appt_month,appt_day,appt_year)
+    print(search_date)
 
-    taken_appts=Appointment.query.filter_by(appt_date=search_date).join(Client,Appointment.user_id==Client.user_id).add_columns(Appointment.appt_id, Appointment.provider_id, Appointment.user_id, Appointment.appt_time, Appointment.appt_type_id, Appointment.appt_date, Client.first_name, Client.last_name).all()    
+    taken_appts=Appointment.query.filter_by(appt_date=search_date, user_id=client.user_id).first()
+    print(taken_appts)
+    #taken_appts=Appointment.query.filter_by(appt_date=search_date).join(client,Appointment.user_id==client[0].user_id).add_columns(Appointment.appt_id, Appointment.provider_id, Appointment.user_id, Appointment.appt_time, Appointment.appt_type_id, Appointment.appt_date, Client.first_name, Client.last_name).all()    
     cal_data = generate_calander(appt_year, appt_month, taken_appts)
-    return render_template ("appt_book.html", cal_data=cal_data, taken_appts=taken_appts, day=appt_day, year=appt_year, month=appt_month, isDoctor=isDoctor)
+    return render_template ("appt_book.html", user=user, cal_data=cal_data, taken_appts=taken_appts, day=appt_day, year=appt_year, month=appt_month, isDoctor=isDoctor)
 
 @app.route ('/appt_book/<year>/<month>/<day>/<provider_id>/<timeslot>', methods=['POST'])
 def appt_book_view(year,month,day,provider_id,timeslot):
