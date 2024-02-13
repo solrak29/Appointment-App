@@ -17,3 +17,5 @@ six==1.10.0
 twilio==5.5.0
 #wsgiref==0.1.2
 wsgiref==0.1.2
+Flask-Session==0.6.0
+python-dateutil

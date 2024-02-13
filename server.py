@@ -1,20 +1,30 @@
 """ Appointment Scheduling and Confirmation""" 
-
+import sys
 from jinja2 import StrictUndefined
 from flask import Flask, render_template, request, session, flash, redirect
+from flask_session import Session
 from flask_debugtoolbar import DebugToolbarExtension
 from helper.calander_helper import generate_calander
 from model import connect_to_db, db, Client,Appointment, AppointmentType, BusinessOwner
 from database_functions import create_new_entry, create_new_appt, create_appt_type, create_new_owner, verify_user
-from datetime import datetime,timedelta
+import datetime
 import json
 from twilio.rest import TwilioRestClient
 from datetime import date
+from dateutil.relativedelta import relativedelta
+from datetime import datetime
+
+dt = datetime(year=2022, month=1, day=1)
+dt_next_month = dt + relativedelta(months=1)
+print(dt_next_month)
+
 
 app = Flask(__name__)
-
+app.config["SESSION_PERMANENT"] = False
+app.config["SESSION_TYPE"] = "filesystem"
 app.secret_key = "ABC"
 app.jinja_env.undefined = StrictUndefined
+Session(app)
 
 @app.route('/')
 def index():
@@ -60,6 +70,7 @@ def login_process():
     #       Then we should provide the appropiate message.
     #       Once verifed we provide the admin page that will show the schedule for the business.
 
+    session["user-name"] = user_name
     if is_admin:
         today = date.today()
         #taken_appts=Appointment.query.filter_by(appt_date=today).join(Client,Appointment.user_id==Client.user_id).add_columns(Appointment.appt_id, Appointment.provider_id, Appointment.user_id, Appointment.appt_time, Appointment.appt_type_id, Appointment.appt_date, Client.first_name, Client.last_name).all()    
@@ -67,6 +78,47 @@ def login_process():
         return render_template ("appt_book.html", user=user_name, cal_data=cal_data, taken_appts=None, day=today.day, year=today.year, month=today.month, isDoctor=is_admin)
     else:
         return render_template("existing_user_page.html", user_name=user_name)
+
+
+@app.route('/prev_month', methods=['GET'])
+def prev_month():
+    """
+    This is function called when the user is using the calendar and needs to see the previous month.
+    """
+    is_admin= False # we will pass this along with the session
+    if session.get("user-name"):
+        month = int(request.args.get('month'))
+        year = int(request.args.get('year'))
+        dt = datetime.now()
+        dt = dt.replace(month=month)
+        dt = dt.replace(year=year)
+        dt_prev_month = dt - relativedelta(months=1)
+        cal_data = generate_calander(dt_prev_month.year, dt_prev_month.month, None)
+        return render_template ("appt_book.html", user=session["user-name"], cal_data=cal_data, taken_appts=None, 
+                                day=dt_prev_month.day, year=dt_prev_month.year, month=dt_prev_month.month, isDoctor=is_admin)
+    redirect("/")
+
+
+@app.route('/next_month', methods=['GET'])
+def next_month():
+    """
+    This is function called when the user is using the calendar and needs to see the previous month.
+    """
+    is_admin= False # we will pass this along with the session
+    if session.get("user-name"):
+        month = int(request.args.get('month'))
+        year = int(request.args.get('year'))
+        dt = datetime.now()
+        dt = dt.replace(month=month)
+        dt = dt.replace(year=year)
+        print(dt, file=sys.stderr)
+        dt_next_month = dt + relativedelta(months=1)
+        print(dt_next_month, file=sys.stderr)
+        cal_data = generate_calander(dt_next_month.year, dt_next_month.month, None)
+        return render_template ("appt_book.html", user=session["user-name"], cal_data=cal_data, taken_appts=None, 
+                                day=dt_next_month.day, year=dt_next_month.year, month=dt_next_month.month, isDoctor=is_admin)
+    redirect("/")
+
 
 @app.route('/existing_user_login', methods=['GET'])
 def show_options_for_user():
@@ -105,6 +157,7 @@ def show_appts_scheduled_for_this_pt():
 
     if client.password == password:
         user_id= client.user_id
+        session["user-name"] = client.user_name
         session['user_id']= user_id
         session['isDoctor'] = False
         return render_template("existing_user_page.html", user_name=client.user_name)

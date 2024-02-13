@@ -37,6 +37,7 @@
 
 <div class="container mt-4">
     <h1>{{user}} Appointments</h1>
+    <h3>To make an appointment click on an "Open" link</h3>
 </div>
 <div class="container mt-4">
     <h2>Monthly Calendar</h2>
@@ -44,7 +45,13 @@
         <table class="table">
             <thead>
             <tr>
-                <th colspan="7">{{ month }} {{ year }}</th>
+                <th colspan="7">
+                    <h2>
+                    <a style="color:rgb(0, 0, 9)" href="prev_month?month={{ month }}&year={{ year }}">&laquo;</a>
+                    {{ month }} {{ year }}
+                    <a style="color:rgb(0, 0, 9)" href="next_month?month={{ month }}&year={{ year }}">&raquo;</a>
+                    </h2>
+                </th>
             </tr>
             <tr>
                 <th>Sun</th>
