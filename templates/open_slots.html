@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block head %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Toon Pet Monthly Calendar</title>
+    <!-- Include Bootstrap CSS (you may need to adjust the path) 
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    -->
+    <style>
+        .calendar {
+            width: 100%;
+            margin: 0 auto;
+            height: 100px;
+            border: 1px solid #192430;
+        }
+        .table {
+            border: 1px solid #192430;
+            height: 100%
+        }
+        th {
+            text-align: center;
+            border: 1px solid #192430;
+            font-size: 19px; /* Increased font size for day numbers */
+        }
+        td {
+          text-align: center;
+          border: 1px solid #192430;
+        }
+        td strong {
+            font-size: 18px; /* Increased font size for day numbers */
+        }
+        label {
+            font-size: x-large;
+            margin-right: 10px;
+        }
+        input {
+            font-size: x-large;
+            margin-right: 10px;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+<body>
+
+<div class="container mt-4">
+    <center>
+    <h1> Select the Time You Will Pick Up/Drop Off </h1>
+    <h3>To make an appointment click on an "Submit" link</h3>
+    </center>
+</div>
+<div class="container mt-4">
+    <div class="calendar">
+        <table class="table">
+            <thead>
+            <tr>
+            </tr>
+            <tr>
+                <th>{{ user }}</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>
+                    <form action="/request_booking">
+                        <label for="app">Select A Pick Up/Drop Off Time</label>
+                        <input type="time" id="appt" name="appt">
+                        <input type="submit">
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Include Bootstrap JS (you may need to adjust the path) -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+</body>
+</html>
+
+{% endblock %}

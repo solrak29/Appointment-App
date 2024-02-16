@@ -75,9 +75,47 @@ def login_process():
         today = date.today()
         #taken_appts=Appointment.query.filter_by(appt_date=today).join(Client,Appointment.user_id==Client.user_id).add_columns(Appointment.appt_id, Appointment.provider_id, Appointment.user_id, Appointment.appt_time, Appointment.appt_type_id, Appointment.appt_date, Client.first_name, Client.last_name).all()    
         cal_data = generate_calander(today.year, today.month, None)
-        return render_template ("appt_book.html", user=user_name, cal_data=cal_data, taken_appts=None, day=today.day, year=today.year, month=today.month, isDoctor=is_admin)
+        return render_template ("appt_book.html", user=user_name, cal_data=cal_data, taken_appts=None, day=today.day, year=today.year, month=_get_month_name(today.month), isDoctor=is_admin)
     else:
         return render_template("existing_user_page.html", user_name=user_name)
+
+
+def _get_month_name(month_num: int) -> str:
+    month_num = month_num - 1
+    months = [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May", 
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December"
+    ]
+
+    return months[month_num]
+
+def _get_month_number(month_name: str) -> int:
+    months = {
+        "January": 1,
+        "February": 2,
+        "March": 3,
+        "April": 4,
+        "May": 5, 
+        "June": 6,
+        "July": 7,
+        "August": 8,
+        "September": 9,
+        "October": 10,
+        "November": 11,
+        "December": 12
+    }
+
+    return months[month_name]
 
 
 @app.route('/prev_month', methods=['GET'])
@@ -87,15 +125,17 @@ def prev_month():
     """
     is_admin= False # we will pass this along with the session
     if session.get("user-name"):
-        month = int(request.args.get('month'))
+        month = int(_get_month_number(request.args.get('month')))
+        print(month, file=sys.stderr)
         year = int(request.args.get('year'))
         dt = datetime.now()
         dt = dt.replace(month=month)
         dt = dt.replace(year=year)
         dt_prev_month = dt - relativedelta(months=1)
         cal_data = generate_calander(dt_prev_month.year, dt_prev_month.month, None)
+        print(dt_prev_month.month, file=sys.stderr)
         return render_template ("appt_book.html", user=session["user-name"], cal_data=cal_data, taken_appts=None, 
-                                day=dt_prev_month.day, year=dt_prev_month.year, month=dt_prev_month.month, isDoctor=is_admin)
+                                day=dt_prev_month.day, year=dt_prev_month.year, month=_get_month_name(dt_prev_month.month), isDoctor=is_admin)
     redirect("/")
 
 
@@ -106,7 +146,7 @@ def next_month():
     """
     is_admin= False # we will pass this along with the session
     if session.get("user-name"):
-        month = int(request.args.get('month'))
+        month = _get_month_number(request.args.get('month'))
         year = int(request.args.get('year'))
         dt = datetime.now()
         dt = dt.replace(month=month)
@@ -116,7 +156,7 @@ def next_month():
         print(dt_next_month, file=sys.stderr)
         cal_data = generate_calander(dt_next_month.year, dt_next_month.month, None)
         return render_template ("appt_book.html", user=session["user-name"], cal_data=cal_data, taken_appts=None, 
-                                day=dt_next_month.day, year=dt_next_month.year, month=dt_next_month.month, isDoctor=is_admin)
+                                day=dt_next_month.day, year=dt_next_month.year, month=_get_month_name(dt_next_month.month), isDoctor=is_admin)
     redirect("/")
 
 
@@ -127,8 +167,14 @@ def show_options_for_user():
     user_name=request.args.get('user_name')
     password= request.args.get('password')
     Client= Client.query.filter_by(user_name=user_name).first
-
     return redirect('existing_user_page.html', user_name=user_name)
+
+
+@app.route('/Open', methods=['GET'])
+def show_open_appt_slots():
+    if not session.get("user-name"):
+        redirect("/")
+    return render_template("open_slots.html", user=session["user-name"])
 
 #@app.route('/owner_login', methods=['POST'])
 #def show_appt_book_to_owner():
@@ -244,7 +290,7 @@ def show_appt_book():
     print(taken_appts)
     #taken_appts=Appointment.query.filter_by(appt_date=search_date).join(client,Appointment.user_id==client[0].user_id).add_columns(Appointment.appt_id, Appointment.provider_id, Appointment.user_id, Appointment.appt_time, Appointment.appt_type_id, Appointment.appt_date, Client.first_name, Client.last_name).all()    
     cal_data = generate_calander(appt_year, appt_month, taken_appts)
-    return render_template ("appt_book.html", user=user, cal_data=cal_data, taken_appts=taken_appts, day=appt_day, year=appt_year, month=appt_month, isDoctor=isDoctor)
+    return render_template ("appt_book.html", user=user, cal_data=cal_data, taken_appts=taken_appts, day=appt_day, year=appt_year, month=_get_month_name(appt_month), isDoctor=isDoctor)
 
 @app.route ('/appt_book/<year>/<month>/<day>/<provider_id>/<timeslot>', methods=['POST'])
 def appt_book_view(year,month,day,provider_id,timeslot):
