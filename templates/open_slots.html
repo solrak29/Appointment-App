@@ -42,10 +42,9 @@
 
 {% block content %}
 <body>
-
 <div class="container mt-4">
     <center>
-    <h1> Select the Time You Will Pick Up/Drop Off </h1>
+    <h1> Select the Time You Will Pick Up/Drop Off for {{user}}  </h1>
     <h3>To make an appointment click on an "Submit" link</h3>
     </center>
 </div>
@@ -56,18 +55,28 @@
             <tr>
             </tr>
             <tr>
-                <th>{{ user }}</th>
+                <th colspan="2">{{month}}/{{ day }}/{{ year }}</th>
             </tr>
             </thead>
             <tbody>
             <tr>
                 <td>
-                    <form action="/request_booking">
-                        <label for="app">Select A Pick Up/Drop Off Time</label>
-                        <input type="time" id="appt" name="appt">
-                        <input type="submit">
-                    </form>
+                    <form data-user="{{user}}" data-date="{{month}}/{{day}}/{{year}}" action="/confirm_appt" method="POST">
+                        <label for="app">Select A Pick Up Time</label>
+                        <input type="time" id="pickup" name="pickup">
+                        <input type="hidden" name="date" value="{{month}}/{{day}}/{{year}}">
                 </td>
+                <td>
+                        <label for="app">Select A Drop Off Time</label>
+                        <input type="time" id="dropoff" name="dropoff">
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                        <input type="submit">
+                </td>
+            </tr>
+                    </form>
             </tr>
             </tbody>
         </table>

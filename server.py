@@ -174,7 +174,10 @@ def show_options_for_user():
 def show_open_appt_slots():
     if not session.get("user-name"):
         redirect("/")
-    return render_template("open_slots.html", user=session["user-name"])
+    month = request.args.get('month')
+    year  = request.args.get('year')
+    day   = request.args.get('day')
+    return render_template("open_slots.html", user=session["user-name"], month=month, year=year, day=day)
 
 #@app.route('/owner_login', methods=['POST'])
 #def show_appt_book_to_owner():
@@ -324,26 +327,23 @@ def show_scheduled_appts():
 @app.route ('/confirm_appt', methods=['POST'])
 def conf_appt():
     """ Need to send user to another page after appt has been confirmed"""
-    provider_id=request.form.get('provider_id')
-    appt_time=request.form.get('appt_time')
-    day= request.form.get('day')
-    month= request.form.get('month')
-    year= request.form.get('year')
-    appt_date="%s/%s/%s"%(month,day,year)
+    pickup_time=request.form.get('pickup')
+    dropoff_time=request.form.get('dropoff')
+    date= request.form.get("date")
     user=session['user_id']
 
-    Client = Client.query.filter_by(user_id=user).first()
-    user_id =Client.user_id 
-    first_name=Client.first_name
-    created_appt= create_new_appt(user_id=user_id,
-                            appt_type_id=1,
-                            appt_time=appt_time,
-                            provider_id=provider_id,
-                            appt_date=appt_date)
+    #Client = Client.query.filter_by(user_id=user).first()
+    #user_id =Client.user_id 
+    #first_name=Client.first_name
+    #created_appt= create_new_appt(user_id=user_id,
+    #                        appt_type_id=1,
+    #                        appt_time=appt_time,
+    #                        provider_id=provider_id,
+    #                        appt_date=appt_date)
     
 
-    appointments= Appointment.query.filter_by(user_id=user_id).all()
-    return "Your appointment has been saved!"
+    #appointments= Appointment.query.filter_by(user_id=user_id).all()
+    return f"Your appointment has been saved! {pickup_time} {dropoff_time} {date} {user}"
 
 # @app.route('/twilio/<int:user_id>', methods=['POST'])
 def twilio(user_id):

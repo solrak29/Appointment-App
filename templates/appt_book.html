@@ -72,7 +72,7 @@
                         <strong>{{ day.day }}</strong><br>
                         {% for appointment in day.appt %}
                             {% if appointment.title == "Open" %}
-                             <a style="color:rgb(9, 172, 9)" href="{{ appointment.title }}">{{appointment.title}}</a><br>
+                             <a style="color:rgb(9, 172, 9)" href="{{ appointment.title }}?month={{ month }}&year={{ year }}&day={{ day.day }}">{{appointment.title}}</a><br>
                             {% endif %}
                         {% endfor %}
                     {% endif %}
