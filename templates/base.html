@@ -26,7 +26,11 @@
 	    <a href="/reviews"> <button style="color:black" class="btn-lg btn-block btn-secondary">Reviews</button></a>
 	    </div>
 	    <div class="col-sm-3">
+		{% if user_session is defined %}
+	    <a href="/login"> <button style="color:black" class="btn-lg btn-block btn-secondary">Login Out</button></a>
+		{% else %}
 	    <a href="/login"> <button style="color:black" class="btn-lg btn-block btn-secondary">Login</button></a>
+		{% endif %}
 	    </div>
 		<!--
 	    <div class="col-sm-3">

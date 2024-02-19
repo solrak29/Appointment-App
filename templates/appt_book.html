@@ -36,12 +36,18 @@
 <body>
 
 <div class="container mt-4">
-    <h1>{{user}} Appointments</h1>
-    <h3>To make an appointment click on an "Open" link</h3>
+    <h1>Hi! {{user}} Appointments</h1>
+    <center>
+    <h3>To make an appointment click the box or boxes for the days you want to book.  Then click the book button.</h3>
+    <h4>NOTE: Only days with empty boxes are available. The next page will show time slots avaialble.</h4>
+    </center>
 </div>
 <div class="container mt-4">
     <h2>Monthly Calendar</h2>
     <div class="calendar">
+        <form action="/Open" method="POST">
+        <input type="hidden" name="month" value="{{month}}">
+        <input type="hidden" name="year" value="{{year}}">
         <table class="table">
             <thead>
             <tr>
@@ -51,6 +57,7 @@
                     {{ month }} {{ year }}
                     <a style="color:rgb(0, 0, 9)" href="next_month?month={{ month }}&year={{ year }}">&raquo;</a>
                     </h2>
+                    <input type="submit" value="Book">
                 </th>
             </tr>
             <tr>
@@ -72,7 +79,11 @@
                         <strong>{{ day.day }}</strong><br>
                         {% for appointment in day.appt %}
                             {% if appointment.title == "Open" %}
+                                <input type="checkbox" name="full-{{day.day}}">
+                                <!--
                              <a style="color:rgb(9, 172, 9)" href="{{ appointment.title }}?month={{ month }}&year={{ year }}&day={{ day.day }}">{{appointment.title}}</a><br>
+                                <input type="hidden" name="day" value="{{day.day}}">
+                                -->
                             {% endif %}
                         {% endfor %}
                     {% endif %}
@@ -82,6 +93,7 @@
             {% endfor %}
             </tbody>
         </table>
+        </form>
     </div>
 </div>
 

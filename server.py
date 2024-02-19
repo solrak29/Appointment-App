@@ -29,6 +29,8 @@ Session(app)
 @app.route('/')
 def index():
     """ This is the homepage"""
+    if session.get("user-name"):
+        return render_template("homepage.html", user_session=True)
     return render_template("homepage.html")
 
 @app.route('/registration', methods=['GET'])
@@ -168,6 +170,21 @@ def show_options_for_user():
     password= request.args.get('password')
     Client= Client.query.filter_by(user_name=user_name).first
     return redirect('existing_user_page.html', user_name=user_name)
+
+
+@app.route('/Open', methods=['POST'])
+def show_open_appt_slots_post():
+    if not session.get("user-name"):
+        redirect("/")
+    month = request.form.get('month')
+    year  = request.form.get('year')
+    checked_days = request.form.keys() 
+    day = []
+    for days in checked_days:
+        if "full" in days:
+            day.append(days.split("-")[1])
+    print(request.form, file=sys.stderr)
+    return render_template("open_slots.html", user=session["user-name"], month=month, year=year, day=day)
 
 
 @app.route('/Open', methods=['GET'])
