@@ -12,7 +12,7 @@ import json
 from twilio.rest import TwilioRestClient
 from datetime import date
 from dateutil.relativedelta import relativedelta
-from datetime import datetime
+from datetime import datetime, timedelta
 
 dt = datetime(year=2022, month=1, day=1)
 dt_next_month = dt + relativedelta(months=1)
@@ -21,7 +21,9 @@ print(dt_next_month)
 
 app = Flask(__name__)
 app.config["SESSION_PERMANENT"] = False
+
 app.config["SESSION_TYPE"] = "filesystem"
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=30)
 app.secret_key = "ABC"
 app.jinja_env.undefined = StrictUndefined
 Session(app)
@@ -347,7 +349,16 @@ def conf_appt():
     pickup_time=request.form.get('pickup')
     dropoff_time=request.form.get('dropoff')
     date= request.form.get("date")
+    user = request.form.get("user")
     user=session['user_id']
+    appointments = []
+    appointment = {
+        "appt_date": date,
+        "appt_pickup": pickup_time,
+        "appt_dropoff": dropoff_time
+    }
+    appointments.append(appointment)
+    return render_template("/confirmed.html",first_name=user,appointments=appointments)
 
     #Client = Client.query.filter_by(user_id=user).first()
     #user_id =Client.user_id 

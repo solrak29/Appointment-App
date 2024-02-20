@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 {% block content %}
 <div class="col-sm-7">
-	<div class="well spaced" style="width:60%;align:center;margin:auto;margin-top:40px">		
+	<div class="well spaced" style="width:75%;align:center;margin:auto;margin-top:40px">		
 			<h1 align="center">Hello {{ first_name }}!</h1>
 			<h3 align="center">Here is a list of your scheduled appointments:</h3>
 			<ul style="list-style-type:none">
 				{% for appointment in appointments %}
-					<li align="center"><i>{{ appointment.appt_time }}</i> &nbsp;&nbsp;&nbsp;&nbsp; {{ appointment.appt_date}}</li>
+					<li align="center"><i>Pickup: {{ appointment.appt_pickup }} DropOff: {{ appointment.appt_dropoff }}</i> &nbsp;&nbsp;&nbsp;&nbsp; {{ appointment.appt_date}}</li>
 				{% endfor %}
 			</ul>
 			<h4 align="center"> We look forward to seeing you!</h4>
@@ -14,11 +14,11 @@
 </div>
 <div class="col-sm-5">
 	<div align="right"> 
-			<img style="border-radius:50px"src="/static/sfmap.jpg" height="350" width="100%"></img>
+			<img style="border-radius:50px"src="/static/smile.jpg" height="350" width="100%"></img>
 		</div>
 </div>
 <br>
 <div align="center">
-  <h5>Bay Area Oral & Maxillofacial Surgery 450 Sutter Suite#1001, San Francisco Ca 94109 (415)771-2918</h5>
+  <h5>ToonPet (R)</h5>
 </div>
 {% endblock %}
