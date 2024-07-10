@@ -1,18 +1,24 @@
 ## Synopsis
-  
-Appointment Scheduler is an app that a business to service clients to schedule appointments.
 
-The app will track all apopintments and availability as set by the business owner.  Users have
-to create an account and be verfied by the business owner.  Once verified the client can request
-appointments.  
+## Updated 2/2024
 
-This can maximize the office production as it gives the Clients the (freedom) opportunity to 
-schedule their appointments when they are able to and at the time that is convenient for them. 
+This application was a fork from the Appointment Scheduler by https://github.com/Rubamhassan.  As time
+progressed it became a re-write of the original app mainly with the move to Python 3 and making a
+generic booking service.  It has now been deemed to remove the fork of the original and let this application
+live in its active repository.
 
-The calendar set-up with datetime shows real time dates and only allows the user to schedule 
-two business days in advance. My calendar has the benefit of having two views: one for the Client 
-and one for the doctor. The doctor has the added benefit of seeing who has scheduled an 
-appointment at any time, both in the office and remotely.
+The goal of the application is to be a generic plugin for other platforms and standalone to provide
+the ability to book and track appointments managed by the user of the platform.  
+
+Having this feature as part of any business can maximize any business that requires clients to book appointments.
+A turn-key solution that will integrate with their system or have as a standalone system.  
+
+The key component is the calendar which will update in real time and show appointments as well as available slots.
+This calendar will be fully customizable to handle any business owner's needs in how they need booking services.
+
+The idea is that a client can book and see their appointments for that business.  As well as the business
+owner can see all their appointments.  In addition to this, a notification system is configurable to 
+remind of such appointments.
 
 <!--
 /*
@@ -71,13 +77,13 @@ NOTE the first number there is not typed, it's the order in which I installed.
 
 ## API Reference
 
-Appointment App is using a Twilio api for text messaging to confirm the scheduled appointments.
+Appointment App uses a Twilio API for text messaging to confirm the scheduled appointments.
 
 ## Tests
 
-Tests for Appointment App are located in testing.py . Appointment App offers 56% test coverage through unittests. Testing covers assertions on all pages on Appointment App, and ensures that when a user moves from one html to another it displays the correct page.
+Tests for Appointment App are located in testing.py. Appointment App offers 56% test coverage through unit tests. Testing covers assertions on all pages of Appointment App, and ensures that when a user moves from one HTML to another it displays the correct page.
 
 ## Tech Stack
-Python, Javascript, JQuery, Jinja, SQL, SQLAlchemy, , HTML, CSS, Coverage 
+Python, Javascript, JQuery, Jinja, SQL, SQLAlchemy, HTML, CSS, Coverage 
 
 
