@@ -5,7 +5,7 @@ from flask import Flask, render_template, request, session, flash, redirect
 from flask_session import Session
 from flask_debugtoolbar import DebugToolbarExtension
 from helper.calander_helper import generate_calander
-from model import connect_to_db, db, Client,Appointment, AppointmentType, BusinessOwner
+from model import connect_to_db, db, Client,Appointment, AppointmentType, Users 
 from database_functions import create_new_entry, create_new_appt, create_appt_type, create_new_owner, verify_user
 import datetime
 import json
@@ -13,6 +13,8 @@ from twilio.rest import TwilioRestClient
 from datetime import date
 from dateutil.relativedelta import relativedelta
 from datetime import datetime, timedelta
+from data import NewEntry
+from excpetions import NonProviderException
 
 dt = datetime(year=2022, month=1, day=1)
 dt_next_month = dt + relativedelta(months=1)
@@ -54,25 +56,27 @@ def login_process():
     TODO:  2-factor authentication will be needed.
     """
     #Getting the variables
-    first_name = request.form.get("first_name")
-    last_name = request.form.get("last_name")
-    email= request.form.get("email")
-    cell_phone_number = request.form.get("cell_phone_number")
-    user_name = request.form.get("user_name")
-    password = request.form.get("password")
-    is_admin = request.form.get("is_admin")
+    entry = NewEntry(
+        first_name = request.form.get("first_name"),
+        last_name = request.form.get("last_name"),
+        email= request.form.get("email"),
+        cell_phone_number = request.form.get("cell_phone_number"),
+        user_name = request.form.get("user_name"),
+        password = request.form.get("password"),
+        is_admin = request.form.get("is_admin"),
+        provider = "ToonPet",  #TODO this will part of configuration for the instance
+        is_active = True
+    )
 
-    _ = create_new_entry(first_name=first_name, 
-                         last_name=last_name, 
-                         email=email, 
-                         cell_phone_number=cell_phone_number, 
-                         user_name=user_name,
-                         password=password,
-                         is_admin=is_admin)
-    # The idea here is that create_new_entry will not be 100% complete if admin is selected.
-    # TODO: When admin is selected we should have the account verified.  If the account is not verified
-    #       Then we should provide the appropiate message.
-    #       Once verifed we provide the admin page that will show the schedule for the business.
+    try:
+        _ = create_new_entry(entry)
+        # The idea here is that create_new_entry will not be 100% complete if admin is selected.
+        # TODO: When admin is selected we should have the account verified.  If the account is not verified
+        #       Then we should provide the appropiate message.
+        #       Once verifed we provide the admin page that will show the schedule for the business.
+        #       Initially we will create an admin account
+    except NonProviderException as e:
+        print("Error for provider")  # will add appropiate handling and notification
 
     session["user-name"] = user_name
     if is_admin:
@@ -170,7 +174,7 @@ def show_options_for_user():
     
     user_name=request.args.get('user_name')
     password= request.args.get('password')
-    Client= Client.query.filter_by(user_name=user_name).first
+    Client = Users.query.filter_by(user_name=user_name).first
     return redirect('existing_user_page.html', user_name=user_name)
 
 
@@ -216,9 +220,9 @@ def show_appts_scheduled_for_this_pt():
     
     user_name= request.form.get('user_name')
     password=request.form.get('password')
-    client = Client.query.filter_by(user_name=user_name).first()
+    client = Users.query.filter_by(user_name=user_name).first()
     if not client:
-        flash("Credentials are not correct or not found!")
+        flash("Credentials are not correct or Account not found!")
         return redirect ('login')
 
     first_name = client.first_name
@@ -328,7 +332,7 @@ def appt_book_view(year,month,day,provider_id,timeslot):
     db.session.add(created_appt)
     db.session.commit()
     print("Appointment saved")
-    return redirect('/confirm_appt')
+    return redirect('/confirm_appt', user_session=session['user-id'])
 
 
 @app.route ('/confirm_appt', methods=['GET'])
@@ -341,7 +345,7 @@ def show_scheduled_appts():
     appointments= Appointment.query.filter_by(user_id=user_id).all()
     twilio(user_id)
 
-    return render_template("/confirmed.html",first_name=first_name,appointments=appointments)
+    return render_template("/confirmed.html",user_session=user_id,first_name=first_name,appointments=appointments)
 
 @app.route ('/confirm_appt', methods=['POST'])
 def conf_appt():
@@ -350,6 +354,7 @@ def conf_appt():
     dropoff_time=request.form.get('dropoff')
     date= request.form.get("date")
     user = request.form.get("user")
+    print(session, file=sys.stderr)
     user=session['user_id']
     appointments = []
     appointment = {

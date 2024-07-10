@@ -41,6 +41,11 @@ Schedule view for the doctor:
 Appointment App requires a requirements.txt file installation. Appointment App runs through the server.py file on http://localhost:5000/
 -->
 
+## Update 2024/07/06
+Revisiting this project to start tracking and getting to MVP.
+1. Creating a new user in the system and allowing new user to login.
+2. Login should take to user page.
+
 ## Update 2023/4/4
 
 This applications was built on python 2.7.  

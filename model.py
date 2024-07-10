@@ -1,52 +1,69 @@
 """Models and database functions for my app"""
 
+import datetime
 from flask_sqlalchemy import SQLAlchemy
-# from sqlalchemy.orm import relationship
+from sqlalchemy import ForeignKey
 
 db = SQLAlchemy()
 
-class Client(db.Model):
-    """Client registration info"""
 
-    __tablename__ = "Client"
+class UserType(db.Model):
+    __tablename__ = 'user_type'
+    type_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    type_desc = db.Column(db.String(100), nullable=False)
+    create_date = db.Column(db.Date(), nullable=False)
+    update_date = db.Column(db.Date(), nullable=False)
 
+def load_user_types():
+    user_types = UserType( type_desc="Toon Pet Client",
+                          create_date= datetime.datetime.now(),
+                          update_date = datetime.datetime.now())
+    db.session.add(user_types)
+    user_types = UserType( type_desc="Toon Pet Owner",
+                          create_date= datetime.datetime.now(),
+                          update_date = datetime.datetime.now())
+    db.session.add(user_types)
+    db.session.commit()
+
+class Users(db.Model):
+    """All users of the system"""
+    __tablename__ = "users"
     user_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    user_name = db.Column(db.String(64), nullable=False)
+    user_type_id = db.Column(ForeignKey(UserType.type_id))
     first_name = db.Column(db.String(64), nullable=False)
     last_name = db.Column(db.String(64), nullable=False)
     email = db.Column(db.String, nullable=False) 
     cell_phone_number = db.Column(db.String(64), nullable=False)
     user_name = db.Column(db.String(64), nullable=False)
     password = db.Column(db.String(64), nullable=False)
-    is_admin = db.Column(db.Integer, nullable=False)
-    appointments = db.relationship("Appointment")
+    street_address = db.Column(db.String(64), nullable=False)
+    city = db.Column(db.String(64), nullable=False)
+    state = db.Column(db.String(64), nullable=False)
+    create_date = db.Column(db.Date(), nullable=False)
+    update_date = db.Column(db.Date(), nullable=False)
 
-def example_Client():
-    Client = Client(user_id=9999, first_name="Mickey",
-    				last_name="Mouse", date_of_birth="01/05/2012",
-    				cell_phone_number="4152157711", user_name="MickeyMouse",
-     				password="123456") 
-
-    db.session.add(example_Client)
-    db.session.commit()
-
-
-class BusinessOwner(db.Model):
-    """Business owner info"""
-
-    __tablename__ = "business_owner"
+class Provider(db.Model):
+    """ Provider Details"""
+    __tablename__ = "provider"
 
     provider_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    first_name = db.Column(db.String(64), nullable=False)
-    last_name = db.Column(db.String(64), nullable=False)
-    address = db.Column(db.String(500), nullable=False)
-    phone = db.Column(db.String(20), nullable=False)
-    user_name = db.Column(db.String(20), nullable=False)
-    password = db.Column(db.String(20), nullable=False)
+    user_id = db.Column(ForeignKey(Users.user_id))
+    provider_name = db.Column(db.String(64), nullable=False)
+    create_date = db.Column(db.Date(), nullable=False)
+    update_date = db.Column(db.Date(), nullable=False)
 
-def example_business_owner():
-    business_owner = BusinessOwner(provider_id = 9191, first_name = "Ron",
-    				last_name = "Jones", license_number ="12345",
-    				office_address = "121 Sutter St. SF", office_phone_number ="4152153322")
+
+class Client(db.Model):
+    """Client registration info"""
+
+    __tablename__ = "client"
+
+    client_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    user_id = db.Column(ForeignKey(Users.user_id))
+    provider_id = db.Column(ForeignKey(Provider.provider_id))
+    is_provider = db.Column(db.Integer, nullable=False)
+    appointments = db.relationship("Appointment")
 
 
 class Appointment(db.Model):
@@ -55,11 +72,11 @@ class Appointment(db.Model):
     __tablename__ = "appointment"
 
     appt_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('Client.user_id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('client.user_id'), nullable=False)
     appt_time = db.Column(db.String, nullable=False)
     appt_date = db.Column(db.String, nullable=False)
     appt_type_id = db.Column(db.Integer, db.ForeignKey('appointment_type.appt_type_id'), nullable=False)
-    provider_id = db.Column(db.Integer,db.ForeignKey('business_owner.provider_id'),nullable=False )
+    provider_id = db.Column(db.Integer,db.ForeignKey('provider.provider_id'),nullable=False )
 
     def as_dict(self):
     	return {c.name: getattr(self, c.name) for c in self.__table__.columns}
@@ -77,13 +94,13 @@ def connect_to_db(app):
     """Connect the database to our Flask app."""
 
     # we can choose a database later but for now let's use sqllite
-    #app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///project'
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///booking_system.db'
     
     db.app = app
     db.init_app(app)
     with app.app_context():
         db.create_all()
+        load_user_types()
     
 
 if __name__ == "__main__":
