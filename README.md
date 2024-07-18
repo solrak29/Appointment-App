@@ -83,6 +83,10 @@ Appointment App uses a Twilio API for text messaging to confirm the scheduled ap
 
 Tests for Appointment App are located in testing.py. Appointment App offers 56% test coverage through unit tests. Testing covers assertions on all pages of Appointment App, and ensures that when a user moves from one HTML to another it displays the correct page.
 
+## Database
+Entity Relationships
+![Entity Relationship](booking_system.drawio.png?raw=true "Entity Relationshipe")
+
 ## Tech Stack
 Python, Javascript, JQuery, Jinja, SQL, SQLAlchemy, HTML, CSS, Coverage 
 
